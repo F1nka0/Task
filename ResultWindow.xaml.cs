@@ -20,12 +20,13 @@ namespace WpfApp2
     public partial class ResultWindow : Window
     {
         static Window mwref = Application.Current.MainWindow;
-        Good TopGood = ((MainWindow)mwref).Goods.OrderByDescending(it => it.PriceForKilo).ToList().First();
+        Good TopGood;
         public ResultWindow()
         {
             InitializeComponent();
             double sum = 0;
-            if (TopGood==null) { return; }
+            TopGood = ((MainWindow)mwref).Goods.OrderByDescending(it => it.PriceForKilo).ToList().FirstOrDefault();
+            if (TopGood==null) { Result.Text = "Сперва добавьте значения";  return;  }
             while (TopGood.Amount>0&& sum + TopGood.Weight<= 1000 ) {
                 sum += TopGood.Weight;
                 Result.Text += "Название - "+ TopGood.Name + ", цена - " + TopGood.Cost + ", вес - " + TopGood.Weight+"\n";
@@ -37,7 +38,7 @@ namespace WpfApp2
         }
         private void Window_Closed(object sender, EventArgs e)
         {
-            TopGood = ((MainWindow)mwref).Goods.OrderByDescending(it => it.PriceForKilo).ToList().First();
+            TopGood = ((MainWindow)mwref).Goods.OrderByDescending(it => it.PriceForKilo).ToList().FirstOrDefault();
         }
     }
 }

@@ -20,26 +20,24 @@ namespace WpfApp2
     public partial class ResultWindow : Window
     {
         static Window mwref = Application.Current.MainWindow;
-        List<Good> goods = ((MainWindow)mwref).Goods.OrderByDescending(it => it.PriceForKilo).ToList();
+        Good TopGood = ((MainWindow)mwref).Goods.OrderByDescending(it => it.PriceForKilo).ToList().First();
         public ResultWindow()
         {
             InitializeComponent();
             double sum = 0;
-            Good cur = goods.First();
-            while (goods.Count>0&& sum + goods.First().Weight <= 1000) {
-                cur = goods.First();
-                sum += cur.Weight;
-                Result.Text += "Название - "+cur.Name + ", цена - " + cur.Cost + ", вес - " + cur.Weight+"\n";
-                cur.Amount--;
-                if (cur.Amount<=0) { goods.RemoveAt(0); }
-                if (1000-sum < cur.Weight) {
-                    goods.RemoveAt(0);
+            if (TopGood==null) { return; }
+            while (TopGood.Amount>0&& sum + TopGood.Weight<= 1000 ) {
+                sum += TopGood.Weight;
+                Result.Text += "Название - "+ TopGood.Name + ", цена - " + TopGood.Cost + ", вес - " + TopGood.Weight+"\n";
+                TopGood.Amount--;
+                if (1000-sum < TopGood.Weight) {
+                    return;
                 }
             }
         }
         private void Window_Closed(object sender, EventArgs e)
         {
-            goods = ((MainWindow)mwref).Goods.OrderByDescending(it => it.PriceForKilo).ToList();
+            TopGood = ((MainWindow)mwref).Goods.OrderByDescending(it => it.PriceForKilo).ToList().First();
         }
     }
 }
